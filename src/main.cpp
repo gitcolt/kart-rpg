@@ -158,6 +158,8 @@ int main() {
   
   glm::mat4 mvp;
 
+  float y_translate = -0.1f;
+
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
     glClearColor(0.0f, 0.2f, 0.4f, 1.0f);
@@ -171,7 +173,7 @@ int main() {
     float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
 
     glm::mat4 transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, glm::vec3(0.0f, -0.1f, -0.3f));
+    transform = glm::translate(transform, glm::vec3(0.0f, y_translate, -0.3f));
     transform = glm::rotate(transform, glm::radians(time * 10.f), glm::vec3(0.0f, 1.0f, 0.0f));
     transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     glm::mat4 mat_projection = glm::perspective(glm::radians(45.0f), (float)(screen_width/screen_height), 0.1f, 100.0f);
@@ -183,8 +185,11 @@ int main() {
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     ImGui::Text(":)");
+    ImGui::Text("%.2f FPS", ImGui::GetIO().Framerate);
+    ImGui::SliderFloat("y_translate", &y_translate, -0.3f, 0.3f);
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 
     glfwSwapBuffers(window);
   }

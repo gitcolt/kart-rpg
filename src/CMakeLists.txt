@@ -7,7 +7,7 @@ add_executable(main
   )
 
 target_link_libraries(main
-  PUBLIC
+  PRIVATE
     glfw
     GL
     dl
@@ -17,7 +17,7 @@ target_link_libraries(main
     )
   
 target_include_directories(main
-  PUBLIC
+  PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/glad/include
     ${CMAKE_CURRENT_SOURCE_DIR}/imgui
     ${CMAKE_CURRENT_SOURCE_DIR}/linmath
