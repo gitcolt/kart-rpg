@@ -7,3 +7,8 @@ add_library(imgui
   imgui_internal.h
   )
 
+target_include_directories(imgui
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+

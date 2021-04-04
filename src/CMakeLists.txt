@@ -18,8 +18,6 @@ target_link_libraries(main
   
 target_include_directories(main
   PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/glad/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/imgui
     ${CMAKE_CURRENT_SOURCE_DIR}/linmath
     ${CMAKE_CURRENT_SOURCE_DIR}/stb_image
     )

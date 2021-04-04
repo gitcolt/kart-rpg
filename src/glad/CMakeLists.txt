@@ -3,5 +3,5 @@ add_library(glad
   include/glad/glad.h
   )
 
-target_include_directories(glad PRIVATE include)
+target_include_directories(glad PUBLIC include)
 
