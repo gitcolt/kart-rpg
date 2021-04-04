@@ -1,9 +1,9 @@
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
-#include "linmath.h"
+#include "linmath/linmath.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "stb_image/stb_image.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -55,6 +55,7 @@ static int screen_width = 1280;
 static int screen_height = 720;
 
 int main() {
+
   glfwSetErrorCallback(error_callback);
   if (!glfwInit()) {
     std::cerr << "Failed to initialize GLFW\n";
@@ -70,9 +71,11 @@ int main() {
   glfwSetKeyCallback(window, key_callback);
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);
+
   bool err = gladLoadGL() == 0;
   if (err)
     std::cerr << "Failed to initialize OpenGL context\n";
+
 
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();

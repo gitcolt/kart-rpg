@@ -1,10 +1,6 @@
 add_executable(main
-  main.cpp
-  imgui/backends/imgui_impl_opengl3.cpp
-  imgui/backends/imgui_impl_opengl3.h
-  imgui/backends/imgui_impl_glfw.cpp
-  imgui/backends/imgui_impl_glfw.h
-  )
+main.cpp
+)
 
 target_link_libraries(main
   PRIVATE
@@ -16,12 +12,6 @@ target_link_libraries(main
     #pthread ?
     )
   
-target_include_directories(main
-  PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/linmath
-    ${CMAKE_CURRENT_SOURCE_DIR}/stb_image
-    )
-
 add_subdirectory(glad)
 add_subdirectory(imgui)
 add_subdirectory(linmath)
