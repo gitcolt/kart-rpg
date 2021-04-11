@@ -1,0 +1,6 @@
+struct (class?) to keep render info {
+  aspect_ratio
+
+  texture
+  shader
+}
