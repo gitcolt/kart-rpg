@@ -15,7 +15,6 @@ target_link_libraries(main
   
 add_subdirectory(glad)
 add_subdirectory(imgui)
-add_subdirectory(linmath)
 add_subdirectory(stb_image)
 add_subdirectory(render)
 
