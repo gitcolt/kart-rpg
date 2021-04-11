@@ -9,7 +9,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <iostream>
@@ -119,12 +120,6 @@ void Renderer::set_buffer(GLenum type, GLuint* buffer) {
   glBindBuffer(type, *buffer);
 }
 
-void Renderer::init() {
-  std::cout << "RENDERER INIT\n";
-
-  glm::mat4 mvp;
-}
-
 void Renderer::render(GLuint shader_program) {
   static auto t_start = std::chrono::high_resolution_clock::now();
 
@@ -138,17 +133,17 @@ void Renderer::render(GLuint shader_program) {
   auto t_now = std::chrono::high_resolution_clock::now();
   float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
 
-  glm::mat4 transform = glm::mat4(1.0f);
-  transform = glm::translate(transform, glm::vec3(0.0f, y_translate, -0.3f));
-  transform = glm::rotate(transform, glm::radians(time * 10.f), glm::vec3(0.0f, 1.0f, 0.0f));
-  transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+  glm::mat4 mat_model = glm::mat4(1.0f);
+  mat_model = glm::translate(mat_model, glm::vec3(0.0f, y_translate, -0.3f));
+  mat_model = glm::rotate(mat_model, glm::radians(time * 10.f), glm::vec3(0.0f, 1.0f, 0.0f));
+  mat_model = glm::rotate(mat_model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-  static float aspect_ratio = (float)(1280/720);
+  static float aspect_ratio = (1280.f/720.f);
   glm::mat4 mat_projection = glm::perspective(glm::radians(45.0f), (float)(aspect_ratio), 0.1f, 100.0f);
-  transform = mat_projection * transform;
+  glm::mat4 mvp = mat_projection * mat_model;
 
-  GLint transform_loc = glGetUniformLocation(shader_program, "transform");
-  glUniformMatrix4fv(transform_loc, 1, GL_FALSE, &transform[0][0]);
+  GLint mvp_loc = glGetUniformLocation(shader_program, "mvp");
+  glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, &mvp[0][0]);
 
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

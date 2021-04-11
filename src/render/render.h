@@ -25,8 +25,6 @@ namespace Renderer {
 
   void set_index_buffer(GLuint* elements, size_t size);
 
-  void init();
-
   void render(GLuint shader_program);
 
   GLuint compile_shader(const GLchar* shader_source, const std::string& shader_type);

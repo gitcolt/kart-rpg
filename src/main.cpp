@@ -18,7 +18,6 @@ static void error_callback(int error, const char* description) {
 }
 
 int main() {
-
   glfwSetErrorCallback(error_callback);
   if (!glfwInit()) {
     std::cerr << "Failed to initialize GLFW\n";
@@ -72,7 +71,6 @@ int main() {
   Renderer::buffer_data(GL_ARRAY_BUFFER, vertices, sizeof(vertices));
   Renderer::buffer_data(GL_ELEMENT_ARRAY_BUFFER, elements, sizeof(elements));
 
-  Renderer::init();
   const GLchar* vert_shader_source =
     #include "shaders/vert.glsl"
     ;
