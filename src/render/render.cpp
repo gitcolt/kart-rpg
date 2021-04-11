@@ -4,21 +4,22 @@
 #include "imgui/backends/imgui_impl_opengl3.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
+#include "glad/glad.h"
+#include "glm/mat4x4.hpp"
+#include "glm/vec3.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
 
-#include <iostream>
-
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
+
 #include <iostream>
 #include <chrono>
 #include <cmath>
 #include <vector>
 #include <string>
 #include <numeric>
+#include <iostream>
+
 
 static float y_translate = -0.1f;
 

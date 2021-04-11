@@ -11,6 +11,7 @@ target_link_libraries(render
     glad
     imgui
     stb_image
+    glm
     )
 
  target_include_directories(render

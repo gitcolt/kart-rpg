@@ -17,6 +17,7 @@ add_subdirectory(glad)
 add_subdirectory(imgui)
 add_subdirectory(stb_image)
 add_subdirectory(render)
+add_subdirectory(glm)
 
 add_custom_command(TARGET main POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory

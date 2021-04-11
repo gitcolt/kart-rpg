@@ -2,10 +2,11 @@
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
+#include "glad/glad.h"
+
+#include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <string>
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
