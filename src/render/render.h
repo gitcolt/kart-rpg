@@ -1,3 +1,5 @@
+#include "camera.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
@@ -10,7 +12,7 @@ namespace Renderer {
     GLint num_components;
   };
 
-  GLuint load_texture(const char* filename);
+  GLuint load_texture(const std::string& filename);
 
   void setup_shader_attributes(GLuint shader_program, std::vector<Attribute> attributes);
 
@@ -25,7 +27,7 @@ namespace Renderer {
 
   void set_index_buffer(GLuint* elements, size_t size);
 
-  void render(GLuint shader_program);
+  void render(Camera& camera, GLuint shader_program);
 
   GLuint compile_shader(const GLchar* shader_source, const std::string& shader_type);
 

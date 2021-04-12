@@ -1,4 +1,5 @@
 #include "render/render.h"
+#include "render/camera.h"
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
@@ -8,14 +9,78 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
+#include <bitset>
+
+static Camera cam{};
+class Input {
+  private:
+    std::bitset<16> actions{};
+  public:
+    enum Action {
+      MOVE_FORWARD,
+      MOVE_BACKWARD,
+      TURN_LEFT,
+      TURN_RIGHT
+    };
+    void set_action(Action a) {
+      actions.set(a);
+    }
+    void unset_action(Action a) {
+      actions.reset(a);
+    }
+    bool is_action_set(Action a) {
+      return actions.test(a);
+    }
+} input;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  if (key == GLFW_KEY_W) {
+    if (action == GLFW_PRESS)
+      input.set_action(Input::Action::MOVE_FORWARD);
+    else if (action == GLFW_RELEASE)
+      input.unset_action(Input::Action::MOVE_FORWARD);
+  }
+  if (key == GLFW_KEY_S) {
+    if (action == GLFW_PRESS)
+      input.set_action(Input::Action::MOVE_BACKWARD);
+    else if (action == GLFW_RELEASE)
+      input.unset_action(Input::Action::MOVE_BACKWARD);
+  }
+  if (key == GLFW_KEY_A) {
+    if (action == GLFW_PRESS)
+      input.set_action(Input::Action::TURN_LEFT);
+    else if (action == GLFW_RELEASE)
+      input.unset_action(Input::Action::TURN_LEFT);
+  }
+  if (key == GLFW_KEY_D) {
+    if (action == GLFW_PRESS)
+      input.set_action(Input::Action::TURN_RIGHT);
+    else if (action == GLFW_RELEASE)
+      input.unset_action(Input::Action::TURN_RIGHT);
+  }
+
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 static void error_callback(int error, const char* description) {
   std::cerr << "Error: " << description << "\n";
+}
+
+static void process_input(float ticks) {
+  if (input.is_action_set(Input::Action::MOVE_FORWARD)) {
+    cam.move_forward(ticks);
+  }
+  if (input.is_action_set(Input::Action::MOVE_BACKWARD)) {
+    cam.move_backward(ticks);
+  }
+  if (input.is_action_set(Input::Action::TURN_LEFT)) {
+    cam.turn_left(ticks);
+  }
+  if (input.is_action_set(Input::Action::TURN_RIGHT)) {
+    cam.turn_right(ticks);
+  }
 }
 
 int main() {
@@ -48,7 +113,6 @@ int main() {
   const char* glsl_version = "#version 150 core";
   ImGui_ImplOpenGL3_Init(glsl_version);
   ImGui::StyleColorsDark();
-
 
   GLfloat vertices[] = {
   // x, y, z              u, v
@@ -98,9 +162,15 @@ int main() {
   Renderer::setup_shader_attributes(shader_program, attribs);
   Renderer::load_texture("src/assets/course.png");
 
+  auto t_prev = std::chrono::high_resolution_clock::now();
   while (!glfwWindowShouldClose(window)) {
+    auto t_now = std::chrono::high_resolution_clock::now();
+    float ticks = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_prev).count();
+    t_prev = t_now;
     glfwPollEvents();
-    Renderer::render(shader_program);
+    process_input(ticks);
+    cam.update();
+    Renderer::render(cam, shader_program);
     glfwSwapBuffers(window);
   }
 

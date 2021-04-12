@@ -1,4 +1,5 @@
 #include "render.h"
+#include "camera.h"
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
@@ -13,15 +14,13 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <chrono>
 #include <cmath>
 #include <vector>
 #include <string>
 #include <numeric>
 #include <iostream>
 
-
-static float y_translate = -0.1f;
+static float y_translate = -0.01f;
 
 void check_compile_errors(GLuint shader, std::string type) {
   GLint success;
@@ -87,7 +86,7 @@ void Renderer::setup_shader_attributes(GLuint shader_program, std::vector<Attrib
   }
 }
 
-GLuint Renderer::load_texture(const char* filename) {
+GLuint Renderer::load_texture(const std::string& filename) {
   GLuint tex;
   glGenTextures(1, &tex);
   glBindTexture(GL_TEXTURE_2D, tex);
@@ -95,7 +94,7 @@ GLuint Renderer::load_texture(const char* filename) {
   int width;
   int height;
   int num_color_channels;
-  unsigned char* data = stbi_load(filename, &width, &height, &num_color_channels, 0);
+  unsigned char* data = stbi_load(filename.c_str(), &width, &height, &num_color_channels, 0);
   if (data) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
   } else {
@@ -121,9 +120,7 @@ void Renderer::set_buffer(GLenum type, GLuint* buffer) {
   glBindBuffer(type, *buffer);
 }
 
-void Renderer::render(GLuint shader_program) {
-  static auto t_start = std::chrono::high_resolution_clock::now();
-
+void Renderer::render(Camera& camera, GLuint shader_program) {
   glClearColor(0.0f, 0.2f, 0.4f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
@@ -131,17 +128,15 @@ void Renderer::render(GLuint shader_program) {
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
 
-  auto t_now = std::chrono::high_resolution_clock::now();
-  float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
-
   glm::mat4 mat_model = glm::mat4(1.0f);
   mat_model = glm::translate(mat_model, glm::vec3(0.0f, y_translate, -0.3f));
-  mat_model = glm::rotate(mat_model, glm::radians(time * 10.f), glm::vec3(0.0f, 1.0f, 0.0f));
+  //mat_model = glm::rotate(mat_model, glm::radians(time * 10.f), glm::vec3(0.0f, 1.0f, 0.0f));
   mat_model = glm::rotate(mat_model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
   static float aspect_ratio = (1280.f/720.f);
-  glm::mat4 mat_projection = glm::perspective(glm::radians(45.0f), (float)(aspect_ratio), 0.1f, 100.0f);
-  glm::mat4 mvp = mat_projection * mat_model;
+  glm::mat4 mat_view = camera.get_view_matrix();
+  glm::mat4 mat_projection = glm::perspective(glm::radians(45.0f), (float)(aspect_ratio), 0.01f, 100.0f);
+  glm::mat4 mvp = mat_projection * mat_view * mat_model;
 
   GLint mvp_loc = glGetUniformLocation(shader_program, "mvp");
   glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, &mvp[0][0]);
